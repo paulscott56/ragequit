@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Rage Quit!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        body {
+            padding-top: 20px;
+            padding-bottom: 40px;
+        }
+        /* Custom container */
+        .container-narrow {
+            margin: 0 auto;
+            max-width: 700px;
+        }
+        .container-narrow > hr {
+            margin: 30px 0;
+        }
+        /* Main marketing message and sign up button */
+        .jumbotron {
+            margin: 60px 0;
+            text-align: center;
+        }
+        .jumbotron h1 {
+            font-size: 72px;
+            line-height: 1;
+        }
+        .jumbotron .btn {
+            font-size: 21px;
+            padding: 14px 24px;
+        }
+        /* Supporting marketing content */
+        .marketing {
+            margin: 60px 0;
+        }
+        .marketing p + h4 {
+            margin-top: 28px;
+        }
+        
+        .rageList { 
+            list-style-image: url("img/fistred.jpg"); 
+            vertical-align: middle;
+        } 
+        
+     
+ 
+    </style>
+    <!-- TODO: make sure bootstrap-responsive.min.css points to BootTheme
+        generated file -->
+    <link href="css/bootstrap-responsive.min.css" rel="stylesheet">
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+            <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+    <!-- Fav and touch icons -->
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="img/apple-touch-icon-57-precomposed.png">
+</head>
+
+<body>
+    <div class="container-narrow">
+<a href="https://github.com/paulscott56"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+        <div class="jumbotron">
+            <h1>Rage Quit<br></h1>
+
+            <p class="lead">For those times when you just need to let it all out - Rage Quit it!
+                <br>Totally anonymous, use it to vent those frustrations.
+                <br>This site WILL contain profanity - deal with it. I assume no responsibility for any posts.
+                <br>If you are offended by something, Rage Quit!
+                <br>
+            </p>
+
+            <div class="span9" id="result"></div>
+
+            <form id="rage" name="rage" class="" method="POST" onsubmit="return false;">
+                <textarea name="comment" style="width: 687px; height: 146px;" rows="3" id="comment"></textarea>
+                <button class="btn btn-danger btn-lg" type="submit">Rage Quit!</button>
+            </form>
+        </div>
+
+        <hr>
+        <div class="row-fluid marketing">
+            <div class="span9"><h3>Previous rage quits</h3><hr></div>
+            <div class="span9" id="content" name="content">
+                <ul class="rageList" id="rageList">
+                </ul>
+            </div>
+        </div>
+        <hr>
+        <div class="footer">
+            <p>Public Domain - 2013</p>
+        </div>
+    </div>
+    <!-- /container -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="js/jquery.min.js">
+    </script>
+    <script src="js/bootstrap.min.js"></script>
+
+    <script>
+    var count = 0;
+    var lastTime = 0;
+
+    function refresh() {
+       $.ajax({
+        url: "https://api.mongolab.com/api/1/databases/rage/collections/rageposts?s={'_id':-1}&apiKey=507bc509e4b0e9396b4a4e9d",
+        type: "GET",
+        success: function(data, status){
+            for(i=0; i < data.length; i++) {
+                
+                $('<li />', {html: data[i]["ragecomment"]}).appendTo('ul.rageList');
+            }
+        },
+        error:function(){
+            $("#result").html('There has been an error ');
+        }
+        });
+        }
+
+    $(document).ready(function() {
+        refresh();
+       
+    });    
+
+    $("#rage").submit(function(event) {
+       
+    /* Get some values from elements on the page: */
+    var text = $('textarea#comment').val();
+
+    if (text == "")
+    {
+         alert("Please enter something...");
+         return false;
+    }
+
+    /* Send the data using post and put the results in a div */
+    $.ajax({
+        url: "https://api.mongolab.com/api/1/databases/rage/collections/rageposts?apiKey=507bc509e4b0e9396b4a4e9d",
+        type: "post",
+        data: JSON.stringify( { "ragecomment" : text } ),
+        contentType: "application/json",
+        success: function(){
+            $("#comment").val('');
+            window.location.reload(true);
+        },
+        error:function(){
+            $("#result").html('There is error while submitting');
+        }
+    });
+});
+</script>
+
+</body>
+
+</html>
