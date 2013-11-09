@@ -63,6 +63,7 @@
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/apple-touch-icon-114-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/apple-touch-icon-72-precomposed.png">
     <link rel="apple-touch-icon-precomposed" href="img/apple-touch-icon-57-precomposed.png">
+    <script src="js/jquery.filter_input.js"></script>
 </head>
 
 <body>
@@ -133,7 +134,7 @@
     $("#rage").submit(function(event) {
        
     /* Get some values from elements on the page: */
-    var text = $('textarea#comment').val();
+    var text = $('textarea#comment').val().filter_input({regex:'[a-zA-Z0-9_]'});
 
     if (text == "")
     {
